@@ -1,0 +1,68 @@
+1. How many degrees of freedom does each joint have?
+
+Each joint will have different degrees of freedom. 
+
+Wrist (Joint 0):
+It can perform abduction/adduction (1 DOF) + flexion/extension (1 DOF) + rotation (1 DOF) + translations (3 DOF) = 6 DOF.
+
+Thumb:
+- THUMB_CMC (Joint 1): 
+flexion/extension (1 DOF) , abduction/adduction (1 DOF) = 2 DOF
+- THUMB_MCP (Joint 2):
+flexion/extension (1 DOF) , abduction/adduction (1 DOF) = 2 DOF
+- THUMB_IP (Joint 3):
+abduction/adduction (1 DOF) = 1 DOF
+- THUMB_TIP (Joint 4):
+0 DOF
+
+Thumb total DOF = 5
+
+Finger:
+Let's start with Index finger and we can generalize to other fingers as well:
+- INDEX_FINGER_MCP (Joint 5):
+flexion/extension (1 DOF) , abduction/adduction (1 DOF) = 2 DOF
+- INDEX_FINGER_PIP (Joint 6):
+flexion/extension (1 DOF) = 1 DOF
+- INDEX_FINGER_DIP (Joint 7):
+flexion/extension (1 DOF) = 1 DOF
+- INDEX_FINGER_TIP (Joint 8):
+0 DOF
+
+Finger total DOF = 4
+
+This can be generalized to all fingers.
+
+So hand's total DOF = 6 (wrist) + 5 (thumb) + 4 * 4 (fingers) = 27
+
+
+2. Is there a way to compute the rotation matrices for each joint from their joint angles?
+
+Yes, I have already written the code for this in angles_and_mats.py
+The idea is to compute rotation matrices at each joint's local coordinate system this way:
+# 1. Find the normalized vector from the parent to the child joint and set it as z-axis (v_z) 
+(can set it as other axis as well e.g. x. Just make sure to use right hand rule afterwards).
+# 2. Find the normalized vector from the child to the grandchild joint (v_child_grandchild)
+# 3. Find the cross product of v_z and v_child_grandchild to get the x-axis (v_x) (This implicitly 
+uses the joint angle).
+# 4. Find the cross product of v_x and v_z to get the y-axis (v_y)
+# 5. Create a 3x3 matrix with v_x, v_y, and v_z as columns
+
+
+Then, we can get the rotation matrices for each joint wrt a global coordinate system as well. 
+# 1. Define the global coordinate system as a 3x3 identity matrix at wrist joint (0).
+# 2. For each joint, traverse the hierarchy from parent to child and keep multiplying the 
+rotation matrices in the local coordinate system 
+#    to get the rotation matrix in the global coordinate system.
+# 3. For example, to get the rotation matrix at joint 3, we multiply the rotation matrix at 
+joint 0 with the local rotation matrices at joint 1,2, and 3.
+
+3. How do we compute the length of each bone of the hand?
+
+Take the Euclidean distance for all connected joints. The accuracy will obviously depend on 
+correct camera calibration which we do not have in this setting so it will be a rough estimate.
+
+
+
+
+
+

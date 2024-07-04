@@ -137,7 +137,7 @@ def get_local_rotation_matrices(landmarks):
 
 
 # Rotation matrices in global coordinate system are calculated this way:
-# 1. Defined the global coordinate system as a 3x3 identity matrix defined at wrist joint (0)
+# 1. Define the global coordinate system as a 3x3 identity matrix defined at wrist joint (0)
 # 2. For each joint, traverse the hierarchy from parent to child and keep multiplying the rotation matrices in the local coordinate system 
 #    to get the rotation matrix in the global coordinate system.
 # 3. For example, to get the rotation matrix at joint 3, we multiply the rotation matrix at joint 0 with the local rotation matrices at joint 1,2, and 3.
